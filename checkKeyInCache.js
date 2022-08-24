@@ -1,4 +1,4 @@
-require('dotenv').config();
+require('dotenv').config({ path: __dirname + '/.env' });
 const axios = require('axios');
 const { KEY_THRESHOLD, KEY_NAME, KGS_URL } = process.env;
 const { redis } = require('./db/cache');
