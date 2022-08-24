@@ -3,7 +3,6 @@ const express = require('express');
 const asyncHandler = require('express-async-handler');
 const { KEY_NAME } = process.env;
 const { redis } = require('../db/cache');
-const { checkKeyNum } = require('../util/util');
 const db = require('../db/mysql');
 const router = express.Router();
 
