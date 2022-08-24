@@ -3,6 +3,16 @@ const mysql = require('mysql2/promise');
 require('dotenv').config();
 
 const config = {
+  db: {
+    host: process.env.DB_HOST,
+    port: process.env.DB_PORT,
+    user: process.env.DB_USER,
+    password: process.env.DB_PWD,
+    database: 'shortURL',
+    waitForConnections: true,
+    connectionLimit: 50,
+    queueLimit: 10000,
+  },
   db0: {
     host: process.env.DB0_HOST,
     port: process.env.DB0_PORT,
@@ -34,8 +44,8 @@ const config = {
     queueLimit: 10000,
   },
 };
-
-const pool = [
+const pool = mysql.createPool(config.db);
+const pool_cluster = [
   mysql.createPool(config.db0),
   mysql.createPool(config.db1),
   mysql.createPool(config.db2),
@@ -61,4 +71,4 @@ async function execute(sql, params) {
   return results;
 }
 
-module.exports = { execute, pool };
+module.exports = { execute, pool, pool_cluster };
