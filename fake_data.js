@@ -7,19 +7,19 @@ const { KGS_KEY_THRESHOLD, KGS_GEN_KEY_NUM, SEND_KEY_NUM } = process.env;
 const data = [];
 
 const genKeys = async () => {
-  await keysGenerate();
+  await generateKeys();
   process.exit(0);
 };
 
 genKeys();
 
-async function keysGenerate() {
+async function generateKeys() {
   const currTime = dayjs(Date.now()).format('YYYY-MM-DD HH:mm:ss:SSS');
-  const keyCount = await keysCount();
+  const keyCount = await calcKeysCount();
   if (keyCount < KGS_KEY_THRESHOLD) {
-    await insertData();
+    await insertKeys();
     console.log('Keys generate successful !!');
-    console.log('[', currTime, '] So far not use keys:', keyCount + Number(SEND_KEY_NUM));
+    console.log('[', currTime, '] So far not use keys:', keyCount + Number(KGS_GEN_KEY_NUM));
     console.log('------------------------');
   } else {
     console.log('[', currTime, '] So far not use keys:', keyCount);
@@ -27,7 +27,7 @@ async function keysGenerate() {
   }
 }
 
-function generateFakeData() {
+function generateFakeKeys() {
   for (let i = 0; i < KGS_GEN_KEY_NUM; i++) {
     const encode = randomstring.generate({
       length: 7,
@@ -40,9 +40,9 @@ function generateFakeData() {
   return data;
 }
 
-async function insertData() {
+async function insertKeys() {
   const sql = 'INSERT IGNORE INTO url_keys (random_key, is_use) VALUES ?';
-  const fakeDate = generateFakeData();
+  const fakeDate = generateFakeKeys();
   //   console.log("fakeDate:", fakeDate);
   try {
     // console.log(poolKeyGen.format(sql, [fakeDate]));
@@ -53,7 +53,7 @@ async function insertData() {
   }
 }
 
-async function keysCount() {
+async function calcKeysCount() {
   const sql = 'SELECT count(*) as count FROM url_keys WHERE is_use = 0';
   try {
     const [query] = await pool.execute(sql);
