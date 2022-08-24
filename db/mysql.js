@@ -9,7 +9,7 @@ const config = {
         port: process.env.DB_PORT,
         user: process.env.DB_USER,
         password: process.env.DB_PWD,
-        database: 'shortURL',
+        database: process.env.DB,
         waitForConnections: true,
         connectionLimit: 100,
         // queueLimit: 0,
