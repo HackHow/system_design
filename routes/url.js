@@ -17,17 +17,11 @@ router.post('/', async (req, res) => {
     const findUrl = await db.findUrl(longUrl);
     // console.log('find', findUrl);
     // console.log(findUrl.error);
-    if (findUrl.error) {
-        const hash = md5(longUrl);
-        // console.log('hash', hash);
-        const short = hash.slice(0, 7);
-        // console.log('short', short);
-        const store = await db.store(longUrl, short);
-        // console.log('store', store);
-        const shortUrl = 'http://' + short;
+    if (!findUrl.error) {
+        shortUrl = 'http://' + findUrl;
         res.status(200).json({ shortUrl: shortUrl });
     } else {
-        res.status(200).json({ shortUrl: findUrl });
+        res.status(200).json({ error: findUrl.error });
     }
 });
 
