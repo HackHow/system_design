@@ -1,6 +1,6 @@
-require('dotenv').config();
-const axios = require('axios');
-const { KEY_THRESHOLD, KEY_NAME, KGS_URL } = process.env;
+require('dotenv').config({ path: __dirname + '/.env' });
+const { KEY_NAME } = process.env;
+const { pool } = require('./db/mysql');
 const { redis } = require('./db/cache');
 
 const checkKeyNum = async () => {
@@ -8,20 +8,37 @@ const checkKeyNum = async () => {
   return keyRemain;
 };
 
-const getKeysFromKGS = async () => {
-  console.log(KGS_URL);
-  const { data } = await axios.get(KGS_URL);
-  return data;
-};
-
-const checkKey = async () => {
+const main = async () => {
   const keyNum = await checkKeyNum();
-  console.log('checkKeyNum in redis: ', keyNum);
   if (keyNum < KEY_THRESHOLD) {
-    const keys = await getKeysFromKGS();
-    await redis.sadd(KEY_NAME, keys);
+    await insertCache();
   }
   process.exit(0);
 };
 
-checkKey();
+main();
+
+async function insertCache() {
+  const connection = await pool.getConnection();
+  console.log('START TRANSACTION');
+  try {
+    await connection.query('START TRANSACTION');
+    const selectSql = 'SELECT random_key FROM url_keys WHERE is_use = 0 limit ? FOR UPDATE';
+    const updateSql =
+      'UPDATE url_keys SET is_use = 1 WHERE random_key in (SELECT random_key FROM (SELECT random_key FROM url_keys WHERE is_use = 0 limit ?) as t)';
+    const [encode] = await pool.execute(selectSql, [SEND_KEY_NUM]);
+    const result = encode.map((item) => item.random_key);
+    // redis
+    await redis.sadd(KEY_NAME, result);
+
+    await pool.execute(updateSql, [SEND_KEY_NUM]);
+    await connection.commit();
+
+    console.log('TRANSACTION Success!!');
+  } catch (err) {
+    await connection.query('ROLLBACK');
+    console.log(err);
+  } finally {
+    await connection.release();
+  }
+}
