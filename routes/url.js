@@ -27,8 +27,7 @@ router.post('/', async (req, res) => {
     const shortUrl = 'http://' + short;
     res.status(200).json({ shortUrl: shortUrl });
   } else {
-    const shortUrl = 'http://' + findUrl;
-    res.status(200).json({ shortUrl: shortUrl });
+    res.status(200).json({ shortUrl: findUrl });
   }
 });
 
