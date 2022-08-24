@@ -18,8 +18,8 @@ async function generateKeys() {
   const keyCount = await calcKeysCount();
   if (keyCount < KGS_KEY_THRESHOLD) {
     await insertKeys();
-    console.log('Keys generate successful !!');
-    console.log('[', currTime, '] So far not use keys:', keyCount + Number(KGS_GEN_KEY_NUM));
+    console.log('[', currTime, ']');
+    console.log('Keys generate successful !! So far not use keys:', keyCount + Number(KGS_GEN_KEY_NUM));
     console.log('------------------------');
   } else {
     console.log('[', currTime, '] So far not use keys:', keyCount);
@@ -47,9 +47,9 @@ async function insertKeys() {
   try {
     // console.log(poolKeyGen.format(sql, [fakeDate]));
     await pool.query(sql, [fakeDate]);
-    console.log('Insert data successful !!');
   } catch (err) {
     console.log(err);
+    console.log('------------------------');
   }
 }
 
