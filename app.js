@@ -3,7 +3,6 @@ const app = express();
 require('dotenv').config();
 const { PORT } = process.env;
 const urlRoutes = require('./routes/url');
-app.use(express.json());
 
 app.use(express.json());
 
@@ -23,5 +22,5 @@ app.use(function (err, req, res, next) {
 });
 
 app.listen(3000, () => {
-    console.log(`server is listen on port ${process.env.PORT}....`);
+  console.log(`server is listen on port ${process.env.PORT}....`);
 });
