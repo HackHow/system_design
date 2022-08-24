@@ -5,7 +5,12 @@ const { KGS_KEY_THRESHOLD, KGS_GEN_KEY_NUM } = process.env;
 
 const data = [];
 
-keysGenerate();
+const genKeys = async () => {
+  await keysGenerate();
+  process.exit(0);
+};
+
+genKeys();
 
 async function keysGenerate() {
   const keyCount = await keysCount();
