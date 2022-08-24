@@ -12,8 +12,8 @@ const config = {
         password: process.env.DB0_PWD,
         database: process.env.DB,
         waitForConnections: true,
-        connectionLimit: 100,
-        // queueLimit: 0,
+        connectionLimit: 50,
+        queueLimit: 10000,
     },
     db_1: {
         host: process.env.DB1_HOST,
@@ -22,8 +22,8 @@ const config = {
         password: process.env.DB1_PWD,
         database: process.env.DB,
         waitForConnections: true,
-        connectionLimit: 100,
-        // queueLimit: 0,
+        connectionLimit: 50,
+        queueLimit: 10000,
     },
     db_2: {
         host: process.env.DB2_HOST,
@@ -32,8 +32,8 @@ const config = {
         password: process.env.DB2_PWD,
         database: process.env.DB,
         waitForConnections: true,
-        connectionLimit: 100,
-        // queueLimit: 0,
+        connectionLimit: 50,
+        queueLimit: 10000,
     },
 };
 
@@ -119,13 +119,26 @@ const findUrl = async (longUrl) => {
 };
 
 const getLongUrl = async (shortUrl) => {
-    const lastChar = shortUrl.slice(-1);
-    const dbNum = lastChar.charCodeAt(0) % 3;
+    const dbId = base62.decode(shortUrl);
+    // console.log('dbId', dbId);
+    let dbNum;
+    let id;
+    if (dbId < dbStorage) {
+        dbNum = 0;
+        id = dbId;
+    } else if (dbId < dbStorage * 2) {
+        dbNum = 1;
+        id = dbId - dbStorage;
+    } else {
+        dbNum = 2;
+        id = dbId - dbStorage * 2;
+    }
     // console.log(dbNum);
+    // console.log(id);
+
     try {
-        let [result] = await pool[dbNum].execute('SELECT long_url AS long_url FROM url_table WHERE short_url = ?', [
-            shortUrl,
-        ]);
+        let [result] = await pool[dbNum].execute('SELECT long_url FROM url_table WHERE id = ?', [id]);
+        // console.log(result);
         return result;
     } catch (error) {
         console.log('model error: ', error);

@@ -6,7 +6,7 @@ const router = express.Router();
 router.get('/', async (req, res) => {
     let { shortUrl } = req.query;
     // console.log('shortUrl: ', shortUrl);
-    let result = await db.getLongUrl(shortUrl);
+    let [result] = await db.getLongUrl(shortUrl);
     // console.log('result: ', result);
     res.status(200).json({ data: result.long_url });
 });
