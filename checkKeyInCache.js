@@ -12,7 +12,7 @@ const checkKeyNum = async () => {
 const main = async () => {
   const keyNum = await checkKeyNum();
   const currTime = dayjs(Date.now()).format('YYYY-MM-DD HH:mm:ss:SSS');
-  console.log(currTime);
+  console.log('[', currTime, ']');
   if (keyNum < KEY_THRESHOLD) {
     console.log('The number of keys is less than the threshold, so we need to insert keys to redis');
     await insertKeysToCache();
