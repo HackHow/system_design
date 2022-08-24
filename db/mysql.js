@@ -1,6 +1,7 @@
 /* eslint-disable no-param-reassign */
 const mysql = require('mysql2/promise');
 require('dotenv').config();
+const md5 = require('md5');
 
 const config = {
     db: {
@@ -48,4 +49,37 @@ const store = async (longUrl, shortUrl) => {
     }
 };
 
-module.exports = { execute, pool, store };
+const findUrl = async (longUrl) => {
+    const conn = await pool.getConnection();
+    try {
+        await conn.query('START TRANSACTION');
+        const findUrl = 'SELECT short_url from url_table WHERE long_url = ? FOR UPDATE';
+        const find = await conn.execute(findUrl, [longUrl]);
+        const short = find[0][0]?.short_url;
+        // console.log('find', short);
+        if (short === undefined) {
+            // console.log('here');
+            const hash = md5(longUrl);
+            // console.log('hash', hash);
+            const shortUrl = hash.slice(0, 7);
+            // console.log('short', shortUrl);
+            const insertUrl = 'INSERT INTO url_table(long_url, short_url) VALUES (?, ?)';
+            const insert = await conn.execute(insertUrl, [longUrl, shortUrl]);
+            await conn.commit();
+            return shortUrl;
+        }
+        await conn.commit();
+        return short;
+    } catch (err) {
+        await conn.commit();
+        await conn.query('ROLLBACK');
+        return {
+            error: err,
+            status: 400,
+        };
+    } finally {
+        await conn.release();
+    }
+};
+
+module.exports = { execute, pool, store, findUrl };
