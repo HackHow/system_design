@@ -17,6 +17,7 @@ const main = async () => {
     console.log('The number of keys is less than the threshold, so we need to insert keys to redis');
     await insertKeysToCache();
     console.log('The number of keys in redis so far:', keyNum + Number(SEND_KEY_NUM));
+    console.log('---------------------');
   } else {
     console.log('The number of keys is still enough in redis:', keyNum);
     console.log('---------------------');
@@ -43,7 +44,6 @@ async function insertKeysToCache() {
     await connection.commit();
 
     console.log('TRANSACTION SUCCESS !!');
-    console.log('---------------------');
   } catch (err) {
     await connection.query('ROLLBACK');
     console.log('TRANSACTION FAILED !!');
