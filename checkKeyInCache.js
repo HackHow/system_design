@@ -16,6 +16,7 @@ const main = async () => {
     await insertCache();
   } else {
     console.log('Keys are still enough in redis');
+    console.log('---------------------');
   }
   process.exit(0);
 };
@@ -39,6 +40,7 @@ async function insertCache() {
     await connection.commit();
 
     console.log('TRANSACTION Success!!');
+    console.log('---------------------');
   } catch (err) {
     await connection.query('ROLLBACK');
     console.log(err);
