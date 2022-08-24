@@ -1,6 +1,7 @@
 /* eslint-disable no-param-reassign */
 const mysql = require('mysql2/promise');
 require('dotenv').config();
+const base62 = require('base62/lib/ascii');
 const md5 = require('md5');
 
 const config = {
@@ -72,12 +73,11 @@ const store = async (longUrl, shortUrl) => {
     }
 };
 
+const dbStorage = 1000000;
 const findUrl = async (longUrl) => {
-    const hash = md5(longUrl);
-    const shortUrl = hash.slice(0, 7);
-    const lastChar = shortUrl.slice(-1);
+    const lastChar = longUrl.slice(-1);
     const dbNum = lastChar.charCodeAt(0) % 3;
-    // console.log(dbNum);
+
     let conn = await pool[dbNum].getConnection();
 
     try {
@@ -86,8 +86,21 @@ const findUrl = async (longUrl) => {
         const find = await conn.execute(findUrl, [longUrl]);
         const short = find[0][0]?.short_url;
         if (short === undefined) {
-            const insertUrl = 'INSERT INTO url_table(long_url, short_url) VALUES (?, ?)';
-            const insert = await conn.execute(insertUrl, [longUrl, shortUrl]);
+            const insertUrl = 'INSERT INTO url_table(long_url) VALUES(?)';
+            const insert = await conn.execute(insertUrl, [longUrl]);
+            const id = insert[0].insertId;
+            // console.log('insert', id);
+            const dbId = dbNum * dbStorage + id;
+            // console.log('dbid', dbId);
+            const trans = base62.encode(`${dbId}`);
+            let addZero = '0';
+            for (let i = 0; i < 6 - trans.length; i++) {
+                addZero += '0';
+            }
+            const shortUrl = addZero + trans;
+            // console.log('shortUrl', shortUrl);
+            const storeUrl = 'UPDATE url_table SET short_url = ? WHERE id = ?';
+            const store = await conn.execute(storeUrl, [shortUrl, id]);
             await conn.commit();
             return shortUrl;
         }
