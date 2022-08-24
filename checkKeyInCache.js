@@ -14,9 +14,14 @@ const getKeysFromKGS = async () => {
   return data;
 };
 
-const keyNum = await checkKeyNum();
-console.log('checkKeyNum in redis: ', keyNum);
-if (keyNum < KEY_THRESHOLD) {
-  const keys = await getKeysFromKGS();
-  await redis.sadd(KEY_NAME, keys);
-}
+const checkKey = async () => {
+  const keyNum = await checkKeyNum();
+  console.log('checkKeyNum in redis: ', keyNum);
+  if (keyNum < KEY_THRESHOLD) {
+    const keys = await getKeysFromKGS();
+    await redis.sadd(KEY_NAME, keys);
+  }
+  process.exit(0);
+};
+
+checkKey();

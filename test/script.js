@@ -17,7 +17,16 @@ export const options = {
 };
 // test HTTP
 export default function () {
-  const res = http.get('http://localhost:3000/api/1.0/report/payments');
+  const url = 'http://35.77.230.71/api/2.0/url';
+  const res = http.post(
+    url,
+    JSON.stringify({
+      longUrl: 'www.google.com',
+    }),
+    {
+      headers: { 'Content-Type': 'application/json' },
+    }
+  );
   check(res, { 'status was 200': (r) => r.status == 200 });
   sleep(1);
 }
