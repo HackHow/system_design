@@ -18,7 +18,6 @@ async function generateKeys() {
   const keyCount = await calcKeysCount();
   if (keyCount < KGS_KEY_THRESHOLD) {
     await insertKeys();
-    console.log();
     console.log(
       '[',
       currTime,
