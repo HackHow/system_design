@@ -1,5 +1,5 @@
 require('dotenv').config({ path: __dirname + '/.env' });
-const { KEY_NAME } = process.env;
+const { KEY_NAME, KEY_THRESHOLD } = process.env;
 const { pool } = require('./db/mysql');
 const { redis } = require('./db/cache');
 
