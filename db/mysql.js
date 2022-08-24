@@ -11,8 +11,8 @@ const config = {
         password: process.env.DB_PWD,
         database: 'shortURL',
         waitForConnections: true,
-        connectionLimit: 10,
-        queueLimit: 0,
+        connectionLimit: 100,
+        // queueLimit: 0,
     },
 };
 
@@ -48,16 +48,21 @@ const store = async (longUrl, shortUrl) => {
         return err;
     }
 };
-
+// let dbCount = 0;
+// let transCount = 0;
 const findUrl = async (longUrl) => {
     const conn = await pool.getConnection();
     try {
         await conn.query('START TRANSACTION');
-        const findUrl = 'SELECT short_url from url_table WHERE long_url = ? FOR UPDATE';
+        const findUrl = 'SELECT short_url from url_table WHERE long_url = ?';
         const find = await conn.execute(findUrl, [longUrl]);
         const short = find[0][0]?.short_url;
+        // console.log('short', short);
+        // console.log('trans', transCount++);
         // console.log('find', short);
         if (short === undefined) {
+            // dbCount += 1;
+            // console.log('insert', dbCount);
             // console.log('here');
             const hash = md5(longUrl);
             // console.log('hash', hash);

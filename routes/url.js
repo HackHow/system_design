@@ -11,8 +11,10 @@ router.get('/', async (req, res) => {
     // console.log('result: ', result);
     res.status(200).json({ data: result.long_url });
 });
-
+// let count = 0;
 router.post('/', async (req, res) => {
+    // count += 1;
+    // console.log('count', count);
     const longUrl = req.body.url;
     const findUrl = await db.findUrl(longUrl);
     // console.log('find', findUrl);
