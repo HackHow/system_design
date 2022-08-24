@@ -2,20 +2,20 @@ require("dotenv").config();
 const md5 = require("md5");
 const randomstring = require("randomstring");
 const { poolKeyGen } = require("./db/mysql");
-const { KEY_THRESHOLD, CHECK_KEY_INTERVAL, IMPORT_COUNT_SECOND } = process.env;
+const { KGS_KEY_THRESHOLD, KGS_CHECK_KEY_INTERVAL, KGS_GEN_KEY_NUM } = process.env;
 
 const data = [];
 
 setInterval(async () => {
   const keyCount = await keysCount();
   console.log("Not use keys:", keyCount);
-  if (keyCount < KEY_THRESHOLD) {
+  if (keyCount < KGS_KEY_THRESHOLD) {
     await insertData();
   }
-}, CHECK_KEY_INTERVAL);
+}, KGS_CHECK_KEY_INTERVAL);
 
 function generateFakeData() {
-  for (let i = 0; i < IMPORT_COUNT_SECOND; i++) {
+  for (let i = 0; i < KGS_GEN_KEY_NUM; i++) {
     const randomString = randomstring.generate({
       length: 7,
       charset: "alphanumeric",
