@@ -1,7 +1,8 @@
-require('dotenv').config();
+require('dotenv').config({ path: __dirname + '/.env' });
 const randomstring = require('randomstring');
+const dayjs = require('dayjs');
 const { pool } = require('./db/mysql');
-const { KGS_KEY_THRESHOLD, KGS_GEN_KEY_NUM } = process.env;
+const { KGS_KEY_THRESHOLD, KGS_GEN_KEY_NUM, SEND_KEY_NUM } = process.env;
 
 const data = [];
 
@@ -13,12 +14,17 @@ const genKeys = async () => {
 genKeys();
 
 async function keysGenerate() {
+  const currTime = dayjs(Date.now()).format('YYYY-MM-DD HH:mm:ss:SSS');
   const keyCount = await keysCount();
-  console.log('Not use keys:', keyCount);
   if (keyCount < KGS_KEY_THRESHOLD) {
     await insertData();
+    console.log('Keys generate successful !!');
+    console.log('[', currTime, '] So far not use keys:', keyCount + Number(SEND_KEY_NUM));
+    console.log('------------------------');
+  } else {
+    console.log('[', currTime, '] So far not use keys:', keyCount);
+    console.log('------------------------');
   }
-  console.log('keys generate successful');
 }
 
 function generateFakeData() {
@@ -41,7 +47,7 @@ async function insertData() {
   try {
     // console.log(poolKeyGen.format(sql, [fakeDate]));
     await pool.query(sql, [fakeDate]);
-    console.log('Successful!!');
+    console.log('Insert data successful !!');
   } catch (err) {
     console.log(err);
   }
