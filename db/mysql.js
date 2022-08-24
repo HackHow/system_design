@@ -48,4 +48,19 @@ const store = async (longUrl, shortUrl) => {
     }
 };
 
-module.exports = { execute, pool, store };
+const findUrl = async (longUrl) => {
+    try {
+        const insertUrl = 'SELECT short_url from url_table WHERE long_url = ?';
+        const insert = await pool.execute(insertUrl, [longUrl]);
+        const short = insert[0][0].short_url;
+        // console.log('find', short);
+        return short;
+    } catch (err) {
+        return {
+            error: 'Long url not found',
+            status: 404,
+        };
+    }
+};
+
+module.exports = { execute, pool, store, findUrl };
