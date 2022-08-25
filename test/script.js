@@ -7,17 +7,18 @@ export const options = {
   scenarios: {
     contacts: {
       executor: 'constant-arrival-rate',
-      rate: 200,
+      rate: 300,
       timeUnit: '1s',
-      duration: '20s',
-      preAllocatedVUs: 2000,
+      duration: '10s',
+      preAllocatedVUs: 3000,
       // maxVUs: 100,
     },
   },
 };
 // test HTTP
 export default function () {
-  const url = 'http://35.77.230.71:3000/api/2.0/url';
+  const url =
+    'http://sdAlb-1701157693.ap-northeast-1.elb.amazonaws.com/api/2.0/url';
   const res = http.post(
     url,
     JSON.stringify({
