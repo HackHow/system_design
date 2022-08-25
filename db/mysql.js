@@ -122,5 +122,20 @@ const getLongUrl = async (shortUrl) => {
     return { 'model error': error };
   }
 };
+// const shortArray = []
+// shortArray.push({ shortUrl: shortUrl });
+// console.log(shortArray);
+const findAllShort = async () => {
+  try {
+    for (let dbNum = 0; dbNum < 3; dbNum++) {
+      let rows = await pool[dbNum].execute(
+        'SELECT short_url AS short_url FROM url_table'
+      );
+      return rows;
+    }
+  } catch (error) {
+    return { 'finddall sql error': error };
+  }
+};
 
-module.exports = { pool, store, findUrl, getLongUrl };
+module.exports = { pool, store, findUrl, getLongUrl, findAllShort };
