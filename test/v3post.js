@@ -32,7 +32,7 @@ let num = Math.floor(Math.random() * url_array.length);
 
 // test HTTP
 export default function () {
-  let test_url = `http://sdAlb-1701157693.ap-northeast-1.elb.amazonaws.com/api/1.0/url`;
+  let test_url = `http://sdAlb-1701157693.ap-northeast-1.elb.amazonaws.com/api/3.0/url`;
   const res = http.post(
     test_url,
     // JSON.stringify({

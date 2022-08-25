@@ -578,7 +578,7 @@ export const options = {
 
 // test HTTP
 export default function () {
-  let test_url = `http://sdAlb-1701157693.ap-northeast-1.elb.amazonaws.com/api/1.0/url?shortUrl=${shortFakeArray[num].short_url}`;
+  let test_url = `http://sdAlb-1701157693.ap-northeast-1.elb.amazonaws.com/api/3.0/url?shortUrl=${shortFakeArray[num].short_url}`;
   const res = http.get(test_url);
   check(res, { 'status was 200': (r) => r.status == 200 });
   sleep(1);

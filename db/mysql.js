@@ -10,7 +10,7 @@ const config = {
     password: process.env.DB_PWD,
     database: 'shortURL',
     waitForConnections: true,
-    connectionLimit: 50,
+    connectionLimit: process.env.DB_LIMIT,
     queueLimit: 10000,
   },
   db0: {
@@ -20,7 +20,7 @@ const config = {
     password: process.env.DB0_PWD,
     database: 'shortURL',
     waitForConnections: true,
-    connectionLimit: 50,
+    connectionLimit: process.env.DB_LIMIT,
     queueLimit: 10000,
   },
   db1: {
@@ -30,7 +30,7 @@ const config = {
     password: process.env.DB1_PWD,
     database: 'shortURL',
     waitForConnections: true,
-    connectionLimit: 50,
+    connectionLimit: process.env.DB_LIMIT,
     queueLimit: 10000,
   },
   db2: {
@@ -40,7 +40,7 @@ const config = {
     password: process.env.DB2_PWD,
     database: 'shortURL',
     waitForConnections: true,
-    connectionLimit: 50,
+    connectionLimit: process.env.DB_LIMIT,
     queueLimit: 10000,
   },
 };
