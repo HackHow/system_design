@@ -8,7 +8,7 @@ const keyGenRoutesV2 = require('./routes/key_gen');
 
 app.use(express.json());
 app.use(`/`, (req, res) => {
-  req.status(200).send({ ok: 'ok' });
+  res.status(200).send({ ok: 'ok' });
 });
 app.use(`/api/1.0/url`, urlRoutes);
 app.use(`/api/2.0/url`, urlRoutesV2);
