@@ -7,17 +7,17 @@ export const options = {
   scenarios: {
     contacts: {
       executor: 'constant-arrival-rate',
-      rate: 40,
+      rate: 200,
       timeUnit: '1s',
       duration: '20s',
-      preAllocatedVUs: 50,
-      maxVUs: 100,
+      preAllocatedVUs: 4000,
+      // maxVUs: 100,
     },
   },
 };
 // test HTTP
 export default function () {
-  const url = 'http://35.77.230.71/api/2.0/url';
+  const url = 'http://35.77.230.71:3000/api/2.0/url';
   const res = http.post(
     url,
     JSON.stringify({

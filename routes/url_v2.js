@@ -23,14 +23,17 @@ router.get(
   })
 );
 
-router.post('/', async (req, res) => {
-  const longUrl = req.body.longUrl;
+setInterval(async () => {
   const threshold = REQ_KEY_NUM * THRESHOLD_RATIO;
   if (keyBuffer.length < threshold) {
+    console.log('key remain in buffer: ', keyBuffer.length);
     const { data } = await axios.get(KGS_URL);
     keyBuffer = [...keyBuffer, ...data];
   }
+}, 1000);
 
+router.post('/', async (req, res) => {
+  const longUrl = req.body.longUrl;
   const shortUrl = keyBuffer.pop();
   const mod = shortUrl.slice(-1).charCodeAt(0) % 3;
   await pool_cluster[mod].execute(
