@@ -2,7 +2,7 @@ require('dotenv').config({ path: __dirname + '/.env' });
 const randomstring = require('randomstring');
 const dayjs = require('dayjs');
 const { pool } = require('./db/mysql');
-const { KGS_KEY_THRESHOLD, KGS_GEN_KEY_NUM, SEND_KEY_NUM } = process.env;
+const { GEN_KEY_TO_DB, THRESHOLD_RATIO } = process.env;
 
 const data = [];
 
@@ -16,13 +16,14 @@ genKeys();
 async function generateKeys() {
   const currTime = dayjs(Date.now()).format('YYYY-MM-DD HH:mm:ss:SSS');
   const keyCount = await calcKeysCount();
-  if (keyCount < KGS_KEY_THRESHOLD) {
+  const threshold = Number(GEN_KEY_TO_DB) * Number(THRESHOLD_RATIO);
+  if (keyCount < threshold) {
     await insertKeys();
     console.log(
       '[',
       currTime,
       '] Keys generate successful!! So far not use keys:',
-      keyCount + Number(KGS_GEN_KEY_NUM)
+      keyCount + Number(GEN_KEY_TO_DB)
     );
     console.log('------------------------');
   } else {
@@ -32,7 +33,7 @@ async function generateKeys() {
 }
 
 function generateFakeKeys() {
-  for (let i = 0; i < KGS_GEN_KEY_NUM; i++) {
+  for (let i = 0; i < GEN_KEY_TO_DB; i++) {
     const encode = randomstring.generate({
       length: 7,
       charset: 'alphanumeric',
