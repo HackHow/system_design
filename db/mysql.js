@@ -116,10 +116,16 @@ const getLongUrl = async (shortUrl) => {
       'SELECT long_url AS long_url FROM url_table WHERE short_url = ?',
       [shortUrl]
     );
-    return result;
-  } catch (error) {
-    console.log('model error: ', error);
-    return { 'model error': error };
+    // console.log('result[0].long_url: ', result[0].long_url);
+    if (result[0]) {
+      return result[0].long_url;
+    }
+  } catch (err) {
+    console.log('model error: ', err);
+    return {
+      error: err,
+      status: 400,
+    };
   }
 };
 // const shortArray = []
