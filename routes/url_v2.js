@@ -16,6 +16,7 @@ const findAllShort = async () => {
       );
       rows = [...rows, ...row];
     }
+    console.log(rows.length);
     return rows;
   } catch (error) {
     return { 'finddall sql error': error };
@@ -25,7 +26,7 @@ router.get(
   '/all',
   asyncHandler(async (req, res) => {
     const [urls] = await findAllShort();
-    res.send({ urls });
+    return res.send({ urls });
   })
 );
 
@@ -40,12 +41,12 @@ router.get(
         [shortUrl]
       );
       if (!result.length) {
-        res.status(200).json({ message: 'not found' });
+        return res.status(200).json({ message: 'not found' });
       }
-      res.status(200).json({ longUrl: result[0].long_url });
+      return res.status(200).json({ longUrl: result[0].long_url });
     } catch (error) {
       console.log(error);
-      res.status(404).json({ message: 'sql error' });
+      return res.status(404).json({ message: 'sql error' });
     }
   })
 );
@@ -69,10 +70,10 @@ router.post('/', async (req, res) => {
       `insert into url_table2(long_url, short_url) values (?, ?)`,
       [longUrl, shortUrl]
     );
-    res.status(200).json({ shortUrl });
+    return res.status(200).json({ shortUrl });
   } catch (error) {
     console.log(error);
-    res.status(404).json({ message: 'sql error' });
+    return res.status(404).json({ message: 'sql error' });
   }
 });
 
