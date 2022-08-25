@@ -306,18 +306,19 @@ let shortFakeArray = [
     short_url: '0ZwyiQE',
   },
 ];
+
 let num = Math.floor(Math.random() * shortFakeArray.length);
-console.log(`shortUrl=${shortFakeArray[num].short_url}`);
+// console.log(`shortUrl=${shortFakeArray[num].short_url}`);
 
 export const options = {
   discardResponseBodies: true,
   scenarios: {
     contacts: {
       executor: 'constant-arrival-rate',
-      rate: 200,
+      rate: 1000,
       timeUnit: '1s',
       duration: '20s',
-      preAllocatedVUs: 4000,
+      preAllocatedVUs: 20000,
     },
   },
 };
@@ -331,16 +332,8 @@ export const options = {
 // }
 
 export default function () {
-  const url = 'http://35.77.230.71:3000/api/2.0/url';
-  const res = http.get(
-    url,
-    JSON.stringify({
-      shortUrl: shortFakeArray[num].short_url,
-    }),
-    {
-      headers: { 'Content-Type': 'application/json' },
-    }
-  );
+  const url = `http://35.77.230.71:3000/api/2.0/url?shortUrl=${shortFakeArray[num].short_url}`;
+  const res = http.get(url);
   check(res, { 'status was 200': (r) => r.status == 200 });
   sleep(1);
 }

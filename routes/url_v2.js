@@ -9,12 +9,14 @@ let keyBuffer = [];
 
 const findAllShort = async () => {
   try {
+    let rows = [];
     for (let dbNum = 0; dbNum < 3; dbNum++) {
-      let rows = await pool_cluster[dbNum].execute(
+      let row = await pool_cluster[dbNum].execute(
         'SELECT short_url AS short_url FROM url_table2 LIMIT 100'
       );
-      return rows;
+      rows = [...rows, ...row];
     }
+    return rows;
   } catch (error) {
     return { 'finddall sql error': error };
   }
@@ -30,16 +32,20 @@ router.get(
 router.get(
   '/',
   asyncHandler(async (req, res) => {
-    const { shortUrl } = req.body;
-    const mod = shortUrl.slice(-1).charCodeAt(0) % 3;
-    const [result] = await pool_cluster[mod].execute(
-      `SELECT long_url FROM url_table2 WHERE short_url = ?`,
-      [shortUrl]
-    );
-    if (!result.length) {
-      res.status(200).json({ message: 'not found' });
+    try {
+      const { shortUrl } = req.query;
+      const mod = shortUrl.slice(-1).charCodeAt(0) % 3;
+      const [result] = await pool_cluster[mod].execute(
+        `SELECT long_url FROM url_table2 WHERE short_url = ?`,
+        [shortUrl]
+      );
+      if (!result.length) {
+        res.status(200).json({ message: 'not found' });
+      }
+      res.status(200).json({ longUrl: result[0].long_url });
+    } catch (error) {
+      res.status(404).json({ message: 'sql error' });
     }
-    res.status(200).json({ longUrl: result[0].long_url });
   })
 );
 
