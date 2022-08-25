@@ -139,10 +139,13 @@ const getLongUrl = async (shortUrl) => {
     try {
         let [result] = await pool[dbNum].execute('SELECT long_url FROM url_table WHERE id = ?', [id]);
         // console.log(result);
-        return result;
-    } catch (error) {
-        console.log('model error: ', error);
-        return { 'model error': error };
+        return result[0].long_url;
+    } catch (err) {
+        console.log('model error: ', err);
+        return {
+            error: err,
+            status: 400,
+        };
     }
 };
 

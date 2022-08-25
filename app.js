@@ -6,7 +6,7 @@ const urlRoutes = require('./routes/url');
 
 app.use(express.json());
 
-app.use(`/api/1.0/url`, urlRoutes);
+app.use(`/api/3.0/url`, urlRoutes);
 
 // Handle 404
 app.use(function (req, res, next) {

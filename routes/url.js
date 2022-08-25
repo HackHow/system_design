@@ -5,10 +5,12 @@ const router = express.Router();
 
 router.get('/', async (req, res) => {
     let { shortUrl } = req.query;
-    // console.log('shortUrl: ', shortUrl);
-    let [result] = await db.getLongUrl(shortUrl);
-    // console.log('result: ', result);
-    res.status(200).json({ data: result.long_url });
+    let result = await db.getLongUrl(shortUrl);
+    if (!result.error) {
+        res.status(200).json({ long_url: result });
+    } else {
+        res.status(400).json({ error: result.error });
+    }
 });
 
 router.post('/', async (req, res) => {
@@ -18,7 +20,7 @@ router.post('/', async (req, res) => {
         shortUrl = 'http://' + findUrl;
         res.status(200).json({ shortUrl: shortUrl });
     } else {
-        res.status(200).json({ error: findUrl.error });
+        res.status(400).json({ error: findUrl.error });
     }
 });
 
