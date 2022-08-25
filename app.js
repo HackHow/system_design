@@ -5,9 +5,6 @@ const { PORT } = process.env;
 const urlRoutes = require('./routes/url');
 
 app.use(express.json());
-app.use(`/`, (req, res) => {
-  res.status(200).send({ ok: 'ok' });
-});
 
 app.use(`/api/3.0/url`, urlRoutes);
 
@@ -16,6 +13,10 @@ app.use(function (req, res, next) {
   // console.log('req.query: ', req.query);
   console.log('404', req.url);
   return res.status(404).json({ error: 'error: 404' });
+});
+
+app.use(`/`, (req, res) => {
+  res.status(200).send({ ok: 'ok' });
 });
 
 //Handle 500
