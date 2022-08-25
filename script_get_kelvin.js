@@ -332,7 +332,7 @@ export const options = {
 // }
 
 export default function () {
-    const url = `http://35.77.230.71:3000/api/2.0/url?shortUrl=${shortFakeArray[num].short_url}`;
+    const url = `http://35.77.230.71:3000/api/3.0/url?shortUrl=${shortFakeArray[num].short_url}`;
     const res = http.get(url);
     check(res, { 'status was 200': (r) => r.status == 200 });
     sleep(1);

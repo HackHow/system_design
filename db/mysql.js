@@ -141,7 +141,7 @@ const getLongUrl = async (shortUrl) => {
         // console.log(result);
         return result[0].long_url;
     } catch (err) {
-        console.log('model error: ', err);
+        // console.log('model error: ', err);
         return {
             error: err,
             status: 400,

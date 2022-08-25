@@ -9,7 +9,7 @@ router.get('/', async (req, res) => {
     if (!result.error) {
         res.status(200).json({ long_url: result });
     } else {
-        res.status(400).json({ error: result.error });
+        res.status(200).json({ error: 'not found' });
     }
 });
 
