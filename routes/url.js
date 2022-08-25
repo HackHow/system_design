@@ -11,11 +11,14 @@ router.get('/', async (req, res) => {
   res.status(200).json({ data: result.long_url });
 });
 
+const shortArray = [];
 router.post('/', async (req, res) => {
   const longUrl = req.body.url;
   const findUrl = await db.findUrl(longUrl);
   if (!findUrl.error) {
     shortUrl = 'http://' + findUrl;
+    shortArray.push({ shortUrl: shortUrl });
+    console.log(shortArray);
     res.status(200).json({ shortUrl: shortUrl });
   } else {
     res.status(200).json({ error: findUrl.error });
