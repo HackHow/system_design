@@ -4,7 +4,8 @@ const asyncHandler = require('express-async-handler');
 const axios = require('axios');
 const { pool_cluster } = require('../db/mysql');
 const router = express.Router();
-const { KGS_URL } = process.env;
+const { KGS_URL, KEY_THRESHOLD } = process.env;
+const keyBuffer = [];
 
 router.get(
   '/',
@@ -24,8 +25,12 @@ router.get(
 
 router.post('/', async (req, res) => {
   const longUrl = req.body.longUrl;
-  const { data } = await axios.get(KGS_URL);
-  const shortUrl = data;
+  if (keyBuffer.length < KEY_THRESHOLD) {
+    const { data } = await axios.get(KGS_URL);
+    keyBuffer.push(data);
+  }
+
+  const shortUrl = keyBuffer.pop();
   const mod = shortUrl.slice(-1).charCodeAt(0) % 3;
   await pool_cluster[mod].execute(
     `insert into url_table(long_url, short_url) values (?, ?)`,
