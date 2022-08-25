@@ -12,7 +12,7 @@ const config = {
         password: process.env.DB0_PWD,
         database: process.env.DB,
         waitForConnections: true,
-        connectionLimit: 50,
+        connectionLimit: process.env.DB_LIMIT,
         queueLimit: 10000,
     },
     db_1: {
@@ -22,7 +22,7 @@ const config = {
         password: process.env.DB1_PWD,
         database: process.env.DB,
         waitForConnections: true,
-        connectionLimit: 50,
+        connectionLimit: process.env.DB_LIMIT,
         queueLimit: 10000,
     },
     db_2: {
@@ -32,7 +32,7 @@ const config = {
         password: process.env.DB2_PWD,
         database: process.env.DB,
         waitForConnections: true,
-        connectionLimit: 50,
+        connectionLimit: process.env.DB_LIMIT,
         queueLimit: 10000,
     },
 };

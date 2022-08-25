@@ -315,10 +315,10 @@ export const options = {
     scenarios: {
         contacts: {
             executor: 'constant-arrival-rate',
-            rate: 500,
+            rate: 1000,
             timeUnit: '1s',
-            duration: '5s',
-            preAllocatedVUs: 2500,
+            duration: '10s',
+            preAllocatedVUs: 10000,
         },
     },
 };
@@ -332,7 +332,7 @@ export const options = {
 // }
 
 export default function () {
-    const url = `http://35.77.230.71:3000/api/3.0/url?shortUrl=${shortFakeArray[num].short_url}`;
+    const url = `http://sdAlb-1701157693.ap-northeast-1.elb.amazonaws.com/api/2.0/url?shortUrl=${shortFakeArray[num].short_url}`;
     const res = http.get(url);
     check(res, { 'status was 200': (r) => r.status == 200 });
     sleep(1);
