@@ -15,9 +15,14 @@ const main = async () => {
   console.log('[', currTime, ']');
   const threshold = Number(SEND_KEY_TO_REDIS) * Number(THRESHOLD_RATIO);
   if (keyNum < threshold) {
-    console.log('The number of keys is less than the threshold, so we need to insert keys to redis');
+    console.log(
+      'The number of keys is less than the threshold, so we need to insert keys to redis'
+    );
     await insertKeysToCache();
-    console.log('The number of keys in redis so far:', keyNum + Number(SEND_KEY_TO_REDIS));
+    console.log(
+      'The number of keys in redis so far:',
+      keyNum + Number(SEND_KEY_TO_REDIS)
+    );
     console.log('---------------------');
   } else {
     console.log('The number of keys is still enough in redis:', keyNum);
@@ -33,7 +38,8 @@ async function insertKeysToCache() {
   console.log('START TRANSACTION');
   try {
     await connection.query('START TRANSACTION');
-    const selectSql = 'SELECT random_key FROM url_keys WHERE is_use = 0 limit ? FOR UPDATE';
+    const selectSql =
+      'SELECT random_key FROM url_keys WHERE is_use = 0 limit ? FOR UPDATE';
     const updateSql =
       'UPDATE url_keys SET is_use = 1 WHERE random_key in (SELECT random_key FROM (SELECT random_key FROM url_keys WHERE is_use = 0 limit ?) as t)';
     const [encode] = await pool.execute(selectSql, [SEND_KEY_TO_REDIS]);
